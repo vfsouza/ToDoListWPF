@@ -2,8 +2,26 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ToDoList"
-             StartupUri="MainWindow.xaml">
+             xmlns:viewModel="clr-namespace:ToDoList.MVVM.ViewModel"
+             xmlns:view="clr-namespace:ToDoList.MVVM.View">
     <Application.Resources>
-         
+	    <ResourceDictionary>
+		    <ResourceDictionary.MergedDictionaries>
+			    <ResourceDictionary Source="Themes/WindowTitleIconTheme.xaml" />
+			    <ResourceDictionary Source="Themes/MenuButtonTheme.xaml" />
+			    <ResourceDictionary Source="Themes/TaskItemTheme.xaml" />
+			    <ResourceDictionary Source="Themes/DefaultColors.xaml" />
+		    </ResourceDictionary.MergedDictionaries>
+			
+		    <DataTemplate DataType="{x:Type viewModel:TasksViewModel}">
+			    <view:TasksView />
+		    </DataTemplate>
+			<DataTemplate DataType="{x:Type viewModel:CalendarViewModel}">
+				<view:CalendarView />
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type viewModel:ToDoTaskViewModel}">
+				<view:ToDoTaskView />
+			</DataTemplate>
+		</ResourceDictionary>
     </Application.Resources>
 </Application>

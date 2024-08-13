@@ -1,5 +1,3 @@
 ﻿namespace ToDoList.Core;
 
-public class ViewModel {
-	
-}
+public class ViewModel : ObservableObject { }

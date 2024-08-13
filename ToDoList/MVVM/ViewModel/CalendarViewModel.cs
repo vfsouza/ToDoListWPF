@@ -1,5 +1,5 @@
-﻿namespace ToDoList.Services;
+﻿namespace ToDoList.MVVM.ViewModel;
 
-public class CalendarViewModel {
+public class CalendarViewModel : Core.ViewModel {
 	
 }

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="MVVM\View\ToDoTaskView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="MVVM\View\ToDoTaskView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\DatePickerTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\DefaultColors.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\TaskItemTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>
