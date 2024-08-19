@@ -13,12 +13,12 @@ public class TasksViewModel : Core.ViewModel {
 	public ObservableCollection<ToDoTask> Tasks { get; }
 	public ObservableCollection<string> FilePaths { get; }
 	public RelayCommand NavigateToToDoTaskView { get; set; }
+	public RelayCommand NavigateToEditToDoTaskView { get; set; }
 	public ToDoTask SelectedTask { 
 		get => _selectedTask; 
 		set {
 			_selectedTask = value; 
 			OnToDoTaskSelected();
-			OnPropertyChanged();
 		}
 	}
 	public INavigationService Navigation { 
@@ -29,23 +29,26 @@ public class TasksViewModel : Core.ViewModel {
 		}
 	}
 
-	public ITaskDBService DbService { 
-		get => _dbService;  
-		set { 
-			_dbService = value;
-			OnPropertyChanged();
-		}
-	}
+	public ITaskService TaskService { get; }
 
-	public TasksViewModel(ITaskDBService dbService, INavigationService navigation) {
+	public ITaskDBService DbService { get; }
+
+	public TasksViewModel(ITaskDBService dbService, INavigationService navigation, ITaskService taskService) {
 		Navigation = navigation;
+		TaskService = taskService;
 		DbService = dbService;
 		Tasks = DbService.GetAllTasks();
 
-		NavigateToToDoTaskView = new RelayCommand((o) => Navigation.NavigateTo<ToDoTaskViewModel>());
+		NavigateToToDoTaskView = new RelayCommand((o) => Navigation.NavigateTo<ToDoTaskViewModel>(), o => true);
+		NavigateToEditToDoTaskView = new RelayCommand((o) => { 
+			ToDoTask t = (ToDoTask) o;
+			TaskService.CurrentTask = t;
+			Navigation.NavigateTo<ToDoTaskViewModel>();
+		}, o => true);
 	}
 
 	public void OnToDoTaskSelected() {
+		TaskService.CurrentTask = SelectedTask;
 		Navigation.NavigateTo<ToDoTaskViewModel>();
 	}
 }

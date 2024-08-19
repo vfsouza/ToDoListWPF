@@ -12,17 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ToDoList.Data;
+using ToDoList.MVVM.ViewModel;
 
-namespace ToDoList.MVVM.View
-{
-    /// <summary>
-    /// Interação lógica para ToDoTaskView.xam
-    /// </summary>
-    public partial class ToDoTaskView : UserControl
-    {
-        public ToDoTaskView()
-        {
-            InitializeComponent();
-        }
-    }
+namespace ToDoList.MVVM.View {
+	/// <summary>
+	/// Interação lógica para ToDoTaskView.xam
+	/// </summary>
+	public partial class ToDoTaskView : UserControl {
+        public ToDoTaskView() {
+			InitializeComponent();
+		}
+	}
 }

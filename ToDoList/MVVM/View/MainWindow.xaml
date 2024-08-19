@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ToDoList"
+        xmlns:control="clr-namespace:ToDoList.Controls"
         xmlns:viewModel="clr-namespace:ToDoList.MVVM.ViewModel"
         mc:Ignorable="d"
         Title="Tasks Viewer"
@@ -32,11 +33,11 @@
 		           PreviewMouseLeftButtonDown="DragMoveOnMouseLeftButtonDown" />
 
 		<StackPanel Grid.Column="1"
-		            Grid.Row="0"
-		            x:Name="WindowPanel"
-		            Orientation="Horizontal"
-		            HorizontalAlignment="Right"
-		            Margin="0,0,8,0">
+					Grid.Row="0"
+					x:Name="WindowPanel"
+					Orientation="Horizontal"
+					HorizontalAlignment="Right"
+					Margin="0,0,8,0">
 			<Button Background="Transparent"
 			        BorderBrush="Transparent"
 			        Height="35"

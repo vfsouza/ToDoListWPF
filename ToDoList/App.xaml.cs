@@ -117,14 +117,18 @@ public partial class App : Application {
 		Host.CreateDefaultBuilder()
 		.ConfigureServices((hostContext, services) => {
 			services.AddSingleton<MainWindow>();
+			services.AddSingleton<TasksView>();
+			services.AddSingleton<CalendarView>();
+			services.AddSingleton<ToDoTaskView>();
 
 			services.AddSingleton<MainViewModel>();
+			services.AddSingleton<ToDoTaskViewModel>();
 			services.AddSingleton<TasksViewModel>();
 			services.AddSingleton<CalendarViewModel>();
-			services.AddSingleton<ToDoTaskViewModel>();
 
 			services.AddSingleton<ITaskDBService, TaskDBService>();
 			services.AddSingleton<INavigationService, NavigationService>();
+			services.AddSingleton<ITaskService, TaskService>();
 
 			services.AddSingleton<Func<Type, ViewModel>>(provider => viewModelType => (ViewModel) provider.GetRequiredService(viewModelType));
 
@@ -138,6 +142,7 @@ public partial class App : Application {
 
 	protected override void OnStartup(StartupEventArgs e) {
 		var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+		_host.Services.GetRequiredService<ToDoTaskViewModel>();
 		mainWindow.Show();
 		base.OnStartup(e);
 	}

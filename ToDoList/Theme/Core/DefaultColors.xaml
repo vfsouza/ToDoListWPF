@@ -6,8 +6,10 @@
 					 Color="#93B1A6" />
 	<SolidColorBrush x:Key="DefaultPrimaryControlColor"
 					 Color="#4C7368" />
-	<SolidColorBrush x:Key="DefaultSecundaryControlColor"
+	<SolidColorBrush x:Key="DefaultSecondaryControlColor"
 					 Color="#3c6358" />
+	<SolidColorBrush x:Key="DefaultEditControlColor"
+					 Color="#32594e" />
 	<SolidColorBrush x:Key="DefaultDarkColor"
 					 Color="#141D22" />
 </ResourceDictionary>

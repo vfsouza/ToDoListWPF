@@ -4,21 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ToDoList.Data;
+using ToDoList.Services;
 
 namespace ToDoList.MVVM.ViewModel {
-	class ToDoTaskViewModel : Core.ViewModel {
+	public class ToDoTaskViewModel : Core.ViewModel {
 		private ToDoTask _selectedTask;
+		private  ITaskService _taskService;
 
 		public ToDoTask SelectedTask {
-			get => _selectedTask; 
-			set { 
+			get => _selectedTask;
+			set {
 				_selectedTask = value;
 				OnPropertyChanged();
 			}
 		}
 
-		public ToDoTaskViewModel(TasksViewModel tasksViewModel) {
-			SelectedTask = tasksViewModel.SelectedTask;
+		public ITaskService TaskService {
+			get => _taskService;
+			set {
+				_taskService = value;
+				OnPropertyChanged();
+			}
+		}
+		public ToDoTaskViewModel(ITaskService taskService) {
+			TaskService = taskService;
+			taskService.ToDoTaskChanged += (s, e) => {
+				SelectedTask = TaskService.CurrentTask;
+			};
+		}
+
+		public void OnNavigated() {
 		}
 	}
 }

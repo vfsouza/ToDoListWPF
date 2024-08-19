@@ -10,13 +10,22 @@
     <Page Update="MVVM\View\ToDoTaskView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Themes\DatePickerTheme.xaml">
+    <Page Update="Controls\Themes\ImageButton.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Themes\DefaultColors.xaml">
+    <Page Update="Theme\Control\AddTaskButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Themes\TaskItemTheme.xaml">
+    <Page Update="Theme\Control\DatePickerTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\Core\DefaultColors.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\Core\InsetShadowTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\Control\TaskItemTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

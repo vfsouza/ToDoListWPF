@@ -11,13 +11,46 @@
 			 d:DesignWidth="300"
 			 Background="Transparent">
 	<Grid>
-		<ListView ItemsSource="{Binding Tasks}"
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="2" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		<StackPanel Grid.Row="0"
+					MouseLeave="StackPanel_MouseLeave"
+					Background="Transparent">
+			<Button Style="{StaticResource AddTaskButton}"
+					Height="36"
+					Width="36"
+					HorizontalAlignment="Left"
+					Margin="0,0,0,6"
+					MouseEnter="Button_MouseEnter">
+				<Image Height="14"
+					   Source="/Images/Icons/plus.png" />
+			</Button>
+			<Border x:Name="AddTaskViewControl"
+					Background="Transparent">
+				<StackPanel x:Name="AddTaskInnerControl"
+							Margin="0,0,0,6">
+					<Label Content="Title" />
+					<TextBox Text="Alguma coisa" />
+					<Label Content="Desc" />
+					<TextBox Text="Outra coisa" />
+				</StackPanel>
+			</Border>
+		</StackPanel>
+		<Border Grid.Row="1" Background="{StaticResource DefaultPrimaryColor}"
+				Padding="0,1,0,1"
+				Margin="0,0,0,6" />
+		<ListView Grid.Row="2"
+				  x:Name="TaskListView"
+				  ItemsSource="{Binding Tasks}"
 				  ItemContainerStyle="{StaticResource TaskItem}"
 				  BorderBrush="Transparent"
 				  Background="Transparent"
 				  ScrollViewer.VerticalScrollBarVisibility="Disabled"
-				  VirtualizingPanel.ScrollUnit="Pixel" 
-				  SelectedItem="{Binding SelectedTask}"/>
-
+				  VirtualizingPanel.ScrollUnit="Pixel"
+				  SelectedItem="{Binding SelectedTask}"
+				  SelectionMode="Single" />
 	</Grid>
 </UserControl>
