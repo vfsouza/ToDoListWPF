@@ -17,8 +17,7 @@ public class TasksViewModel : Core.ViewModel {
 	public ToDoTask SelectedTask { 
 		get => _selectedTask; 
 		set {
-			_selectedTask = value; 
-			OnToDoTaskSelected();
+			_selectedTask = value;
 		}
 	}
 	public INavigationService Navigation { 

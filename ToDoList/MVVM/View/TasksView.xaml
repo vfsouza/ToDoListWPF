@@ -10,6 +10,31 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="300"
 			 Background="Transparent">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Theme/Control/TaskItemTheme.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+			<BeginStoryboard x:Key="OpenTaskDetail">
+				<Storyboard>
+					<DoubleAnimation Storyboard.TargetName="TaskDetailPanel"
+									 Storyboard.TargetProperty="Height"
+									 From="0"
+									 To="100"
+									 Duration="0:0:0.2" />
+				</Storyboard>
+			</BeginStoryboard>
+			<BeginStoryboard x:Key="CloseTaskDetail">
+				<Storyboard>
+					<DoubleAnimation Storyboard.TargetName="TaskDetailPanel"
+									 Storyboard.TargetProperty="Height"
+									 From="100"
+									 To="0"
+									 Duration="0:0:0.2" />
+				</Storyboard>
+			</BeginStoryboard>
+		</ResourceDictionary>
+	</UserControl.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -51,6 +76,7 @@
 				  ScrollViewer.VerticalScrollBarVisibility="Disabled"
 				  VirtualizingPanel.ScrollUnit="Pixel"
 				  SelectedItem="{Binding SelectedTask}"
+				  SelectionChanged="TaskListView_SelectionChanged"
 				  SelectionMode="Single" />
 	</Grid>
 </UserControl>
