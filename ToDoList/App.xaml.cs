@@ -117,9 +117,6 @@ public partial class App : Application {
 		Host.CreateDefaultBuilder()
 		.ConfigureServices((hostContext, services) => {
 			services.AddSingleton<MainWindow>();
-			services.AddSingleton<TasksView>();
-			services.AddSingleton<CalendarView>();
-			services.AddSingleton<ToDoTaskView>();
 
 			services.AddSingleton<MainViewModel>();
 			services.AddSingleton<ToDoTaskViewModel>();

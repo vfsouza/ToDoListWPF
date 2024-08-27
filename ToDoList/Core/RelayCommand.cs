@@ -11,13 +11,18 @@ public class RelayCommand : ICommand {
 		remove => CommandManager.RequerySuggested -= value;
 	}
 
+	public RelayCommand(Action<object> execute) {
+		_execute = execute;
+		_canExecute = null;
+	}
+
 	public RelayCommand(Action<object> execute, Predicate<object> canExecute = null) {
 		_execute = execute;
 		_canExecute = canExecute;
 	}
 
 	public bool CanExecute(object parameter) {
-		return _canExecute(parameter);
+		return _canExecute == null ? true : _canExecute(parameter);
 	}
 
 	public void Execute(object parameter) {

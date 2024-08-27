@@ -9,11 +9,11 @@
 						<Border ClipToBounds="True"
 								Height="{TemplateBinding Height}"
 								Width="{TemplateBinding Width}"
-								Background="{DynamicResource DefaultEditControlColor}">
+								Background="{DynamicResource DefaultSecondaryControlColor}">
 							<Border Background="Transparent"
 									BorderBrush="Black"
-									BorderThickness="4,1,4,1"
-									Margin="-5,-3,6,-3">
+									BorderThickness="3,1,5,1"
+									Margin="-4,-3,6,-3">
 								<Border.Effect>
 									<DropShadowEffect ShadowDepth="0"
 													  BlurRadius="10" />

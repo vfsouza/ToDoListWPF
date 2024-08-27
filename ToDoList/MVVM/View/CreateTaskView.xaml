@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="ToDoList.MVVM.View.CreateTaskView"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:viewModel="clr-namespace:ToDoList.MVVM.ViewModel"
+			 d:DataContext="{d:DesignInstance Type=viewModel:CreateTaskViewModel}"
+             xmlns:local="clr-namespace:ToDoList.MVVM.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+	<StackPanel Grid.Row="0"
+				MouseLeave="StackPanel_MouseLeave"
+				Background="Transparent">
+		<Button Style="{StaticResource AddTaskButton}"
+				Height="36"
+				Width="36"
+				HorizontalAlignment="Left"
+				Margin="0,0,0,6"
+				MouseEnter="Button_MouseEnter"
+				Command="{Binding CreateTaskCommand}">
+			<Image Height="14"
+				   Source="/Images/Icons/plus.png" />
+		</Button>
+		<Border x:Name="AddTaskViewControl"
+				Background="Transparent">
+			<StackPanel x:Name="AddTaskInnerControl"
+						Margin="0,0,0,6">
+				<Label Content="Title" />
+				<TextBox Text="{Binding TaskTitle}" />
+				<Label Content="Description" />
+				<TextBox Text="{Binding TaskDescription}" />
+			</StackPanel>
+		</Border>
+	</StackPanel>
+</UserControl>

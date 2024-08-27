@@ -13,8 +13,7 @@
 						Value="#20EEEEEE" />
 			</Trigger>
 		</Style.Triggers>
-		<Style.Resources>
-		</Style.Resources>
+		<Style.Resources></Style.Resources>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -29,7 +28,12 @@
 							<RowDefinition Height="50" />
 							<RowDefinition />
 						</Grid.RowDefinitions>
-						<Grid.Resources></Grid.Resources>
+						<Grid.Resources>
+							<Style TargetType="Label">
+								<Setter Property="Foreground"
+										Value="#F0FFE9" />
+							</Style>
+						</Grid.Resources>
 						<Border Grid.Column="0"
 								Grid.Row="0"
 								Background="{DynamicResource DefaultSecondaryControlColor}"
@@ -86,7 +90,7 @@
 															   Margin="0,0,14,0">
 											<localClrs:ImageButton.InputBindings>
 												<MouseBinding MouseAction="{x:Static MouseAction.LeftClick}"
-															  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.NavigateToEditToDoTaskView}"
+															  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.DeleteTaskCommand}"
 															  CommandParameter="{Binding}" />
 											</localClrs:ImageButton.InputBindings>
 										</localClrs:ImageButton>
@@ -112,12 +116,35 @@
 								Grid.Row="1"
 								Background="{DynamicResource DefaultSecondaryControlColor}"
 								x:Name="TaskDetailPanel"
-								Height="0">
-							<StackPanel x:Name="TaskDetailInnerPanel">
-								<Label Content="{Binding Description}"
-									   FontSize="16"
-									   Padding="10" />
-							</StackPanel>
+								Height="0"
+								BorderBrush="{DynamicResource DefaultEditControlColor}"
+								BorderThickness="0,0,0,0"
+								ClipToBounds="True">
+							<Grid>
+								<Border Background="Transparent"
+										BorderBrush="Black"
+										BorderThickness="4,4,4,4"
+										Margin="-7,-6,-7,-7">
+									<Border.Effect>
+										<DropShadowEffect ShadowDepth="0"
+														  BlurRadius="15" />
+									</Border.Effect>
+								</Border>
+								<StackPanel x:Name="TaskDetailInnerPanel">
+									<Label Content="{Binding Description}"
+										   FontSize="16"
+										   Padding="10" />
+									<Label Content="{Binding CanvasLink}"
+										   FontSize="16"
+										   Padding="10" />
+									<Label Content="{Binding FilePaths}"
+										   FontSize="16"
+										   Padding="10" />
+									<Label Content="{Binding IsCompleted}"
+										   FontSize="16"
+										   Padding="10" />
+								</StackPanel>
+							</Grid>
 						</Border>
 					</Grid>
 				</ControlTemplate>
