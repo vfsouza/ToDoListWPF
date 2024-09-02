@@ -32,10 +32,10 @@ public partial class App : Application {
 				Title = "Task 1", 
 				Description = "Description 1", 
 				DueDate = DateTime.Now.AddDays(1),
-				FilePaths = new List<string> { 
+				FilePaths = new List<string> {
 					"abc",
 					"def",
-					"ghi"
+					"ghf"
 				}
 			},
 			new ToDoTask { 
@@ -44,7 +44,8 @@ public partial class App : Application {
 				DueDate = DateTime.Now.AddDays(2),
 				FilePaths = new List<string> {
 					"abc",
-					"def"
+					"def",
+					"ghf"
 				}
 			},
 			new ToDoTask { 
@@ -52,7 +53,9 @@ public partial class App : Application {
 				Description = "Description 3",
 				DueDate = DateTime.Now.AddDays(3),
 				FilePaths = new List<string> {
-					"abc"
+					"abc",
+					"def",
+					"ghf"
 				}
 			},
 			new ToDoTask {
@@ -62,7 +65,7 @@ public partial class App : Application {
 				FilePaths = new List<string> {
 					"abc",
 					"def",
-					"ghi"
+					"ghf"
 				}
 			},
 			new ToDoTask {
@@ -71,7 +74,8 @@ public partial class App : Application {
 				DueDate = DateTime.Now.AddDays(2),
 				FilePaths = new List<string> {
 					"abc",
-					"def"
+					"def",
+					"ghf"
 				}
 			},
 			new ToDoTask {
@@ -79,7 +83,9 @@ public partial class App : Application {
 				Description = "Description 6",
 				DueDate = DateTime.Now.AddDays(3),
 				FilePaths = new List<string> {
-					"abc"
+					"abc",
+					"def",
+					"ghf"
 				}
 			},
 			new ToDoTask {
@@ -89,7 +95,7 @@ public partial class App : Application {
 				FilePaths = new List<string> {
 					"abc",
 					"def",
-					"ghi"
+					"ghf"
 				}
 			},
 			new ToDoTask {
@@ -98,7 +104,8 @@ public partial class App : Application {
 				DueDate = DateTime.Now.AddDays(2),
 				FilePaths = new List<string> {
 					"abc",
-					"def"
+					"def",
+					"ghf"
 				}
 			},
 			new ToDoTask {
@@ -106,7 +113,9 @@ public partial class App : Application {
 				Description = "Description 9",
 				DueDate = DateTime.Now.AddDays(3),
 				FilePaths = new List<string> {
-					"abc"
+					"abc",
+					"def",
+					"ghf"
 				}
 			}
 		});

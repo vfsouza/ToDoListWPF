@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <Folder Include="MVVM\Model\" />
+      <Folder Include="Resources\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,6 +34,7 @@
       <None Remove="Images\Icons\edit.png" />
       <None Remove="Images\Icons\editwhite.png" />
       <None Remove="Images\Icons\minimizeicon.png" />
+      <None Remove="Images\Icons\pdficon.png" />
       <None Remove="Images\Icons\plus.png" />
       <Resource Include="Images\Icons\minimizeicon.png" />
       <None Remove="Images\Icons\maximizeicon.png" />
@@ -48,6 +50,9 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="Images\Icons\editwhite.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Images\Icons\pdficon.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="Images\Icons\plus.png">

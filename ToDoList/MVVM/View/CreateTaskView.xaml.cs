@@ -37,5 +37,12 @@ namespace ToDoList.MVVM.View
 			DoubleAnimation heightAnimation = new DoubleAnimation(0, new Duration(TimeSpan.FromSeconds(0.2)));
 			AddTaskViewControl.BeginAnimation(HeightProperty, heightAnimation);
 		}
+
+		private async void TextBox_KeyDown(object sender, KeyEventArgs e) {
+			await Task.Delay(100);
+			AddTaskInnerControl.Measure(new Size(AddTaskViewControl.MaxWidth, AddTaskViewControl.MaxHeight));
+			DoubleAnimation heightAnimation = new DoubleAnimation(AddTaskInnerControl.DesiredSize.Height, new Duration(TimeSpan.FromSeconds(0.2)));
+			AddTaskViewControl.BeginAnimation(HeightProperty, heightAnimation);
+		}
 	}
 }

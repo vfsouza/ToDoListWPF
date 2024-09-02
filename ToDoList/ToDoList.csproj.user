@@ -22,7 +22,19 @@
     <Page Update="Theme\Control\AddTaskButtonTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\Control\ButtonFilterTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\Control\CheckBoxTaskTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\Control\ComboBoxFilterTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\Control\DatePickerTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\Control\ToggleButtonFilterTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\Core\DefaultColors.xaml">

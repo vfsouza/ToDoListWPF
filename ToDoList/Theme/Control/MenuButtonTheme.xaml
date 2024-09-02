@@ -32,7 +32,7 @@
 			<Trigger Property="IsChecked"
 			         Value="True">
 				<Setter Property="Background"
-				        Value="{DynamicResource DefaultDarkColor}" />
+				        Value="{DynamicResource DefaultDarkBrush}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

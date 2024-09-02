@@ -21,6 +21,7 @@ public partial class TasksView : UserControl {
 
 		if (lvi != null) {
 			object o = lvi.SelectedItem;
+			if (o == null) return;
 			ListViewItem lviItem = lvi.ItemContainerGenerator.ContainerFromItem(o) as ListViewItem;
 			Border selectedBorder = FindByName("TaskDetailPanel", lviItem) as Border;
 			StackPanel selectedStackPanel = FindByName("TaskDetailInnerPanel", lviItem) as StackPanel;

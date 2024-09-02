@@ -11,9 +11,13 @@
 			    <ResourceDictionary Source="Theme/Control/MenuButtonTheme.xaml" />
 			    <ResourceDictionary Source="Theme/Control/TaskItemTheme.xaml" />
 			    <ResourceDictionary Source="Theme/Control/AddTaskButtonTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/CheckBoxTaskTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/ComboBoxFilterTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/ButtonFilterTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/ToggleButtonFilterTheme.xaml" />
 			    <ResourceDictionary Source="Theme/Core/InsetShadowTheme.xaml" />
-			    <ResourceDictionary Source="Theme/Core/DefaultColors.xaml" />
-		    </ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Theme/Core/DefaultColors.xaml" />
+			</ResourceDictionary.MergedDictionaries>
 			
 		    <DataTemplate DataType="{x:Type viewModel:TasksViewModel}">
 			    <view:TasksView />
