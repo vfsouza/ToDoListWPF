@@ -160,8 +160,6 @@ public class TasksViewModel : Core.ViewModel {
 				break;
 		}
 	}
-
-
 	private void CreateTask(object obj) {
 		if (string.IsNullOrEmpty(TaskTitle) || string.IsNullOrEmpty(TaskDescription)) {
 			MessageBox.Show("Please fill out all fields.");
@@ -180,7 +178,6 @@ public class TasksViewModel : Core.ViewModel {
 			}
 		}
 	}
-
 	private void AddFilePath(object obj) {
 		OpenFileDialog dlg = new OpenFileDialog();
 		dlg.Filter = "pdf files (*.pdf) |*.pdf;";
@@ -193,7 +190,6 @@ public class TasksViewModel : Core.ViewModel {
 			}
 		}
 	}
-
 	private void OpenFile(object obj) {
 		string path = (string)obj;
 		Process.Start(new ProcessStartInfo {
@@ -201,7 +197,6 @@ public class TasksViewModel : Core.ViewModel {
 			UseShellExecute = true
 		});
 	}
-
 	private void DeleteTask(object obj) {
 		if (MessageBox.Show(CanvasLink, "Are you sure you want to delete this task?", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
 			DbService.DeleteTask(((ToDoTask)obj).Id);
@@ -211,7 +206,6 @@ public class TasksViewModel : Core.ViewModel {
 			}
 		}
 	}
-
 	private void UpdateTaskCompletion(object obj) {
 		ToDoTask t = (ToDoTask)obj;
 		DbService.UpdateTask(t);

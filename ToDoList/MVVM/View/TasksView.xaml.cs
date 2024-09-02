@@ -24,20 +24,45 @@ public partial class TasksView : UserControl {
 			if (o == null) return;
 			ListViewItem lviItem = lvi.ItemContainerGenerator.ContainerFromItem(o) as ListViewItem;
 			Border selectedBorder = FindByName("TaskDetailPanel", lviItem) as Border;
+			Border selectedTaskBorder = FindByName("TaskPanelBorder", lviItem) as Border;
 			StackPanel selectedStackPanel = FindByName("TaskDetailInnerPanel", lviItem) as StackPanel;
 
-			if (selectedBorder != null && selectedStackPanel != null) {
-				selectedStackPanel.Measure(new Size(selectedBorder.MaxWidth, selectedBorder.MaxHeight));
-				DoubleAnimation heightAnimation = new DoubleAnimation(selectedStackPanel.DesiredSize.Height, new Duration(TimeSpan.FromSeconds(0.2)));
-				selectedBorder.BeginAnimation(HeightProperty, heightAnimation);
+			if (selectedBorder != null && selectedStackPanel != null && selectedTaskBorder != null) {
+				CornerRadiusAnimation cornerRadiusAnimation = new CornerRadiusAnimation {
+					From = new CornerRadius(25,0,0,25),
+					To = new CornerRadius(25,0,0,0),
+					Duration = new Duration(TimeSpan.FromSeconds(0.15))
+				};
+
+				cornerRadiusAnimation.Completed += async (s, args) => {
+					await Task.Delay(100);
+					selectedStackPanel.Measure(new Size(selectedBorder.MaxWidth, selectedBorder.MaxHeight));
+					DoubleAnimation heightAnimation = new DoubleAnimation(selectedStackPanel.DesiredSize.Height, new Duration(TimeSpan.FromSeconds(0.2)));
+					selectedBorder.BeginAnimation(HeightProperty, heightAnimation);
+				};
+
+				selectedTaskBorder.BeginAnimation(Border.CornerRadiusProperty, cornerRadiusAnimation);
 			}
 
 			if (previousLvi != null && previousLvi != lviItem) {
 				Border previousBorder = FindByName("TaskDetailPanel", previousLvi) as Border;
+				Border previousTaskBorder = FindByName("TaskPanelBorder", previousLvi) as Border;
 				StackPanel previousStackPanel = FindByName("TaskDetailInnerPanel", previousLvi) as StackPanel;
 
-				if (previousBorder != null && previousStackPanel != null) {
+				if (previousBorder != null && previousStackPanel != null && previousTaskBorder != null) {
 					DoubleAnimation heightAnimation = new DoubleAnimation(0, new Duration(TimeSpan.FromSeconds(0.2)));
+
+					heightAnimation.Completed += async (s, args) => {
+						await Task.Delay(5);
+						CornerRadiusAnimation cornerRadiusAnimation = new CornerRadiusAnimation {
+							From = new CornerRadius(25, 0, 0, 0),
+							To = new CornerRadius(25, 0, 0, 25),
+							Duration = new Duration(TimeSpan.FromSeconds(0.15))
+						};
+
+						previousTaskBorder.BeginAnimation(Border.CornerRadiusProperty, cornerRadiusAnimation);
+					};
+
 					previousBorder.BeginAnimation(HeightProperty, heightAnimation);
 				}
 			}
@@ -64,5 +89,46 @@ public partial class TasksView : UserControl {
 		}
 
 		return null;
+	}
+}
+
+class CornerRadiusAnimation : AnimationTimeline {
+	public CornerRadius From {
+		get { return (CornerRadius)GetValue(FromProperty); }
+		set { SetValue(FromProperty, value); }
+	}
+
+	public static readonly DependencyProperty FromProperty =
+		DependencyProperty.Register("From", typeof(CornerRadius), typeof(CornerRadiusAnimation));
+
+	public CornerRadius To {
+		get { return (CornerRadius)GetValue(ToProperty); }
+		set { SetValue(ToProperty, value); }
+	}
+
+	public static readonly DependencyProperty ToProperty =
+		DependencyProperty.Register("To", typeof(CornerRadius), typeof(CornerRadiusAnimation));
+
+	public override Type TargetPropertyType => typeof(CornerRadius);
+
+	public override object GetCurrentValue(object defaultOriginValue, object defaultDestinationValue, AnimationClock animationClock) {
+		if (animationClock.CurrentProgress == null) {
+			return From;
+		}
+
+		double progress = animationClock.CurrentProgress.Value;
+
+		CornerRadius fromVal = From;
+		CornerRadius toVal = To;
+
+		return new CornerRadius(
+			fromVal.TopLeft + (toVal.TopLeft - fromVal.TopLeft) * progress,
+			fromVal.TopRight + (toVal.TopRight - fromVal.TopRight) * progress,
+			fromVal.BottomRight + (toVal.BottomRight - fromVal.BottomRight) * progress,
+			fromVal.BottomLeft + (toVal.BottomLeft - fromVal.BottomLeft) * progress);
+	}
+
+	protected override Freezable CreateInstanceCore() {
+		return new CornerRadiusAnimation();
 	}
 }
