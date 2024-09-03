@@ -12,6 +12,7 @@ namespace ToDoList.Data {
 		public string? Description { get; set; }
 		public string? CanvasLink { get; set; }
 		public List<string>? FilePaths { get; set; }
+		public List<string>? FilePathsStudy { get; set; }
 		public DateTime DueDate { get; set; }
 		public bool IsCompleted { get; set; } = false;
 		public ToDoTask() { }

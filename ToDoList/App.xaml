@@ -16,6 +16,7 @@
 				<ResourceDictionary Source="Theme/Control/ButtonFilterTheme.xaml" />
 				<ResourceDictionary Source="Theme/Control/ToggleButtonFilterTheme.xaml" />
 				<ResourceDictionary Source="Theme/Control/DatePickerTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/ItemsControlPDFTheme.xaml" />
 			    <ResourceDictionary Source="Theme/Core/InsetShadowTheme.xaml" />
 				<ResourceDictionary Source="Theme/Core/DefaultColors.xaml" />
 			</ResourceDictionary.MergedDictionaries>

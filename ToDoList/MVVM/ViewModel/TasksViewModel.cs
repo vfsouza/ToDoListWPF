@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Data;
 using ToDoList.Core;
 using ToDoList.Data;
 using ToDoList.Services;
@@ -19,6 +20,7 @@ public class TasksViewModel : Core.ViewModel {
 	private string _canvasLink;
 	private List<string> _filePaths;
 	private bool _isNotCompletedSelected = false;
+	private byte _lastFilterOperation = 2;
 
 	public string TaskTitle {
 		get => _taskTitle;
@@ -55,6 +57,7 @@ public class TasksViewModel : Core.ViewModel {
 			OnPropertyChanged();
 		}
 	}
+	public ObservableCollection<string> FilePathStudy { get; set; }
 	public ObservableCollection<string> FileTitlesOC { get; set; }
 	public INavigationService Navigation {
 		get => _navigation;
@@ -71,8 +74,11 @@ public class TasksViewModel : Core.ViewModel {
 	public RelayCommand DeleteTaskCommand { get; set; }
 	public RelayCommand OpenFileCommand { get; set; }
 	public RelayCommand AddNewFilePath { get; set; }
+	public RelayCommand AddNewFilePathStudy { get; set; }
 	public RelayCommand ChangeTaskCompletion { get; set; }
 	public RelayCommand FilterTasksCommand { get; set; }
+	public RelayCommand DeletePath { get; set; }
+	public RelayCommand OpenURLCommand { get; set; }
 
 	public ITaskService TaskService { get; }
 	public ITaskDBService DbService { get; }
@@ -82,15 +88,18 @@ public class TasksViewModel : Core.ViewModel {
 		TaskService = taskService;
 		DbService = dbService;
 		Tasks = new ObservableCollection<ToDoTask>();
-		FilterTasks("2");
+		FilterTasks(_lastFilterOperation);
 		FilePaths = new List<string>();
 		FileTitlesOC = new ObservableCollection<string>();
+		FilePathStudy = new ObservableCollection<string>();
 
 		CreateTaskCommand = new RelayCommand(CreateTask);
 
 		NavigateToToDoTaskView = new RelayCommand((o) => Navigation.NavigateTo<ToDoTaskViewModel>(), o => true);
 
 		AddNewFilePath = new RelayCommand(AddFilePath);
+
+		AddNewFilePathStudy = new RelayCommand(AddFilePathStudy);
 
 		OpenFileCommand = new RelayCommand(OpenFile);
 
@@ -105,13 +114,30 @@ public class TasksViewModel : Core.ViewModel {
 		ChangeTaskCompletion = new RelayCommand(UpdateTaskCompletion);
 
 		FilterTasksCommand = new RelayCommand(FilterTasks);
-	}
 
+		DeletePath = new RelayCommand(DeleteFilePath);
+
+		OpenURLCommand = new RelayCommand(OpenURL, CanOpenURL);
+	}
+	private bool CanOpenURL(object obj) {
+		return obj != null && !string.IsNullOrEmpty((string)obj);
+	}
+	private void OpenURL(object obj) {
+		if (obj == null) return;
+		string url = (string)obj;
+		OpenOnNavigator(url);
+	}
 	private void FilterTasks(object obj) {
-		int op = int.Parse((string)obj);
+		byte op;
+		try {
+			op = byte.Parse((string)obj);
+		} catch (InvalidCastException) {
+			op = (byte)obj;
+		}
 		Tasks.Clear();
-		var tasks = DbService.GetAllTasks();
+		var tasks = DbService.GetAllTasks().OrderBy(t => t.DueDate);
 		DateTime today = DateTime.Now.Date;
+		_lastFilterOperation = op;
 
 		switch (op) {
 			case 0:
@@ -161,7 +187,7 @@ public class TasksViewModel : Core.ViewModel {
 		}
 	}
 	private void CreateTask(object obj) {
-		if (string.IsNullOrEmpty(TaskTitle) || string.IsNullOrEmpty(TaskDescription)) {
+		if (string.IsNullOrEmpty(TaskTitle)) {
 			MessageBox.Show("Please fill out all fields.");
 			return;
 		} else {
@@ -177,6 +203,7 @@ public class TasksViewModel : Core.ViewModel {
 				Tasks.Add(t);
 			}
 		}
+		FilterTasks(_lastFilterOperation);
 	}
 	private void AddFilePath(object obj) {
 		OpenFileDialog dlg = new OpenFileDialog();
@@ -186,16 +213,39 @@ public class TasksViewModel : Core.ViewModel {
 		if (dlg.FileNames != null) {
 			foreach (string file in dlg.FileNames) {
 				FilePaths.Add(file);
-				FileTitlesOC.Add(Path.GetFileName(file));
+				string fileName = Path.GetFileName(file);
+				int insertIndex = FileTitlesOC.ToList().BinarySearch(fileName);
+				if (insertIndex < 0) {
+					insertIndex = ~insertIndex;
+				}
+				FileTitlesOC.Insert(insertIndex, fileName);
 			}
 		}
+		FilePaths = FilePaths.OrderBy(f => f).ToList();
+	}
+	private void AddFilePathStudy(object obj) {
+		if (obj == null) return;
+		ToDoTask t = (ToDoTask)obj;
+		if (t.FilePathsStudy == null) t.FilePathsStudy = new List<string>();
+
+		OpenFileDialog dlg = new OpenFileDialog();
+		dlg.Filter = "pdf files (*.pdf) |*.pdf;";
+		dlg.Multiselect = true;
+		dlg.ShowDialog();
+
+		if (dlg.FileNames != null) {
+			foreach (string file in dlg.FileNames) {
+				t.FilePathsStudy.Add(file);
+			}
+		}
+
+		FilterTasks(_lastFilterOperation);
+		DbService.UpdateTask(t);
 	}
 	private void OpenFile(object obj) {
+		if (obj == null) return;
 		string path = (string)obj;
-		Process.Start(new ProcessStartInfo {
-			FileName = path,
-			UseShellExecute = true
-		});
+		OpenOnNavigator(path);
 	}
 	private void DeleteTask(object obj) {
 		if (MessageBox.Show(CanvasLink, "Are you sure you want to delete this task?", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
@@ -210,6 +260,12 @@ public class TasksViewModel : Core.ViewModel {
 		ToDoTask t = (ToDoTask)obj;
 		DbService.UpdateTask(t);
 		_isNotCompletedSelected = !_isNotCompletedSelected;
-		FilterTasks("4");
+		FilterTasks(_lastFilterOperation);
 	}
+	private void DeleteFilePath(object obj) {
+		string path = (string)obj;
+		FilePaths.Remove(FilePaths.Find(a => a.Contains(path)));
+		FileTitlesOC.Remove(path);
+	}
+	private Process? OpenOnNavigator(string path) => Process.Start(new ProcessStartInfo() { FileName = (string)path, UseShellExecute = true });
 }
