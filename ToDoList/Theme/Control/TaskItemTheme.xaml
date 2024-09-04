@@ -1,10 +1,14 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 						  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 						  xmlns:converter="clr-namespace:ToDoList.Services.Converter"
-						  xmlns:localClrs="clr-namespace:ToDoList.Controls">
+						  xmlns:localClrs="clr-namespace:ToDoList.Controls"
+						  xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="/Controls/Themes/ImageButton.xaml" />
 	</ResourceDictionary.MergedDictionaries>
+	<converter:TaskDateConverter x:Key="TaskDateConverter" />
+	<converter:MultiValueConverter x:Key="MultiValueConverter" />
+	<converter:DueDateTaskConverter x:Key="DueDateTaskConverter" />
 	<Style TargetType="{x:Type ListViewItem}"
 			 x:Key="TaskItem">
 		<Style.Triggers>
@@ -42,9 +46,6 @@
 								  Height="50">
 							<DockPanel VerticalAlignment="Center"
 										  LastChildFill="False">
-								<DockPanel.Resources>
-									<converter:TaskDateConverter x:Key="TaskDateConverter" />
-								</DockPanel.Resources>
 								<CheckBox IsChecked="{Binding IsCompleted}"
 											 Height="24"
 											 Margin="12,0,8,0"
@@ -71,7 +72,7 @@
 											<DoubleAnimation Storyboard.TargetName="TaskToolsPanel"
 																  Storyboard.TargetProperty="Width"
 																  From="0"
-																  To="100"
+																  To="130"
 																  Duration="0:0:0.2" />
 										</Storyboard>
 									</BeginStoryboard>
@@ -81,7 +82,7 @@
 										<Storyboard>
 											<DoubleAnimation Storyboard.TargetName="TaskToolsPanel"
 																  Storyboard.TargetProperty="Width"
-																  From="100"
+																  From="130"
 																  To="0"
 																  Duration="0:0:0.2" />
 										</Storyboard>
@@ -120,6 +121,16 @@
 																  CommandParameter="{Binding}" />
 											</localClrs:ImageButton.InputBindings>
 										</localClrs:ImageButton>
+										<DatePicker Margin="0,0,14,0"
+														DockPanel.Dock="Right"
+														SelectedDate="{Binding DueDate}">
+											<i:Interaction.Triggers>
+												<i:EventTrigger EventName="SelectedDateChanged">
+													<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.ChangeTaskDate}"
+																				  CommandParameter="{Binding}"/>
+												</i:EventTrigger>
+											</i:Interaction.Triggers>
+										</DatePicker>
 									</DockPanel>
 								</StackPanel>
 								<Rectangle Fill="{DynamicResource DefaultEditControlBrush}"
@@ -145,18 +156,30 @@
 									</Border.Effect>
 								</Border>
 								<StackPanel x:Name="TaskDetailInnerPanel">
-									<Label Content="{Binding Description}"
-											 FontSize="16"
-											 Padding="10" />
+									<TextBlock Text="{Binding Description}"
+												  FontSize="16"
+												  Margin="10,10,0,0">
+										<TextBlock.Resources>
+											<Style TargetType="TextBlock">
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding Description}"
+																	 Value="{x:Null}">
+														<Setter Property="Visibility"
+																  Value="Collapsed" />
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</TextBlock.Resources></TextBlock>
 									<Button Content="CANVAS"
 											  FontSize="16"
-											  Padding="10"
+											  FontWeight="SemiBold"
+											  Margin="10,10,0,10"
 											  Foreground="{DynamicResource DefaultPrimaryForegroundBrush}"
 											  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.OpenURLCommand}"
 											  CommandParameter="{Binding CanvasLink}">
 										<Button.Template>
 											<ControlTemplate TargetType="Button">
-												<ContentPresenter VerticalAlignment="Center" />
+												<Label Content="{TemplateBinding Content}" />
 											</ControlTemplate>
 										</Button.Template>
 										<Button.Resources>
@@ -171,13 +194,40 @@
 											</Style>
 										</Button.Resources>
 									</Button>
-									<Label Content="Slide/Materials"
-											 Foreground="{DynamicResource DefaultPrimaryForegroundBrush}"
-											 FontSize="16"
-											 FontWeight="SemiBold"
-											 Margin="10,0,0,10" />
-									<ItemsControl ItemsSource="{Binding FilePaths}"
-													  Style="{StaticResource ItemsControlPDFTheme}" />
+									<StackPanel Orientation="Horizontal"
+													VerticalAlignment="Center"
+													Margin="10,0,0,10">
+										<Label Content="Slide/Materials"
+												 Foreground="{DynamicResource DefaultPrimaryForegroundBrush}"
+												 FontSize="16"
+												 FontWeight="SemiBold" />
+										<Button Style="{StaticResource AddTaskButton}"
+												  Height="24"
+												  Width="24"
+												  HorizontalAlignment="Left"
+												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePathStudy}">
+											<Button.CommandParameter>
+												<MultiBinding Converter="{StaticResource MultiValueConverter}">
+													<Binding Path="." />
+													<Binding Source="0" />
+												</MultiBinding>
+											</Button.CommandParameter>
+											<Image Height="12"
+													 Source="/Images/Icons/plus.png" />
+										</Button>
+									</StackPanel>
+									<ItemsControl x:Name="FilePaths"
+													  ItemsSource="{Binding FilePaths}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<WrapPanel Orientation="Horizontal"
+															  MaxWidth="650" />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<StaticResource ResourceKey="ItemsControlPDFTheme" />
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
 									<StackPanel Orientation="Horizontal"
 													VerticalAlignment="Center"
 													Margin="10,0,0,10">
@@ -190,14 +240,29 @@
 												  Height="24"
 												  Width="24"
 												  HorizontalAlignment="Left"
-												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePathStudy}"
-												  CommandParameter="{Binding}">
+												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePathStudy}">
+											<Button.CommandParameter>
+												<MultiBinding Converter="{StaticResource MultiValueConverter}">
+													<Binding Path="." />
+													<Binding Source="1" />
+												</MultiBinding>
+											</Button.CommandParameter>
 											<Image Height="12"
 													 Source="/Images/Icons/plus.png" />
 										</Button>
 									</StackPanel>
-									<ItemsControl ItemsSource="{Binding FilePathsStudy}"
-													  Style="{StaticResource ItemsControlPDFTheme}" />
+									<ItemsControl x:Name="FilePathsStudy"
+													  ItemsSource="{Binding FilePathsStudy}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<WrapPanel Orientation="Horizontal"
+															  MaxWidth="650" />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<StaticResource ResourceKey="ItemsControlPDFTheme" />
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
 								</StackPanel>
 							</Grid>
 						</Border>

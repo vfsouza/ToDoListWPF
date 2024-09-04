@@ -1,47 +1,45 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+						  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						  xmlns:controls="clr-namespace:ToDoList.Controls">
 	<Style x:Key="DatePickerCalendarStyle"
-		   TargetType="{x:Type Calendar}"
-		   BasedOn="{StaticResource {x:Type Calendar}}" />
+			 TargetType="{x:Type Calendar}"
+			 BasedOn="{StaticResource {x:Type Calendar}}" />
 	<Style x:Key="DropDownButtonStyle"
-		   TargetType="Button">
+			 TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
-					<Border Background="{DynamicResource DefaultSecondaryControlBrush}"
-							CornerRadius="15">
-						<ContentPresenter HorizontalAlignment="Center"
-										  VerticalAlignment="Center"/>
-					</Border>
+					<controls:ImageButton Image="/Images/Icons/calendar.png"
+												 HoverImage="/Images/Icons/calendarwhite.png"
+												 VerticalAlignment="Center"
+												 HorizontalAlignment="Left"
+												 Height="50"
+												 Width="24" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>
 	<Style x:Key="{x:Type DatePicker}"
-		   TargetType="{x:Type DatePicker}">
+			 TargetType="{x:Type DatePicker}">
 		<Setter Property="IsTodayHighlighted"
-				Value="True" />
+				  Value="True" />
 		<Setter Property="SelectedDateFormat"
-				Value="Short" />
+				  Value="Short" />
 		<Setter Property="CalendarStyle"
-				Value="{DynamicResource DatePickerCalendarStyle}" />
+				  Value="{DynamicResource DatePickerCalendarStyle}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type DatePicker}">
 					<Grid x:Name="PART_Root"
-						  Height="{TemplateBinding Height}"
-						  Width="{TemplateBinding Width}">
+							Height="{TemplateBinding Height}"
+							Width="{TemplateBinding Width}">
 						<Button x:Name="PART_Button"
-								Style="{StaticResource DropDownButtonStyle}">
-							<Label Content="Select Due Date"
-								   Foreground="{DynamicResource DefaultPrimaryForegroundBrush}"
-								   Padding="0,0,0,2"/>
-						</Button>
+								  Style="{StaticResource DropDownButtonStyle}" />
 						<Popup x:Name="PART_Popup"
-							   AllowsTransparency="True"
-							   Placement="Bottom"
-							   PlacementTarget="{Binding ElementName=PART_Button}"
-							   StaysOpen="False" />
+								 AllowsTransparency="True"
+								 Placement="Bottom"
+								 PlacementTarget="{Binding ElementName=PART_Button}"
+								 StaysOpen="False" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>

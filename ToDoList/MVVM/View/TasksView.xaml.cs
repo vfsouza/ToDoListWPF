@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Specialized;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -11,9 +12,45 @@ namespace ToDoList.MVVM.View;
 public partial class TasksView : UserControl {
 	private bool selected = false;
 	private ListViewItem previousLvi = null;
+	private TasksViewModel tasksViewModel;
 
 	public TasksView() {
 		InitializeComponent();
+
+		DataContextChanged += TasksView_DataContextChanged;
+	}
+
+	private void TasksView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
+		tasksViewModel = DataContext as TasksViewModel;
+
+		if (tasksViewModel != null) {
+			tasksViewModel.Tasks.CollectionChanged += Tasks_CollectionChanged;
+		}
+	}
+
+	private void Tasks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+		if (e.OldItems != null) {
+			foreach (ToDoTask oldTask in e.OldItems) {
+				oldTask.FilePaths.CollectionChanged -= FilePaths_CollectionChanged;
+				oldTask.FilePathsStudy.CollectionChanged -= FilePaths_CollectionChanged;
+			}
+		}
+
+		if (e.NewItems != null) {
+			foreach (ToDoTask newTask in e.NewItems) {
+				newTask.FilePaths.CollectionChanged += FilePaths_CollectionChanged;
+				newTask.FilePathsStudy.CollectionChanged += FilePaths_CollectionChanged;
+			}
+		}
+	}
+
+	private async void FilePaths_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+		await Task.Delay(80);
+		Border selectedBorder = FindByName("TaskDetailPanel", previousLvi) as Border;
+		StackPanel selectedStackPanel = FindByName("TaskDetailInnerPanel", previousLvi) as StackPanel;
+		selectedStackPanel.Measure(new Size(selectedBorder.MaxWidth, selectedBorder.MaxHeight));
+		DoubleAnimation heightAnimation = new DoubleAnimation(selectedStackPanel.DesiredSize.Height, new Duration(TimeSpan.FromSeconds(0.2)));
+		selectedBorder.BeginAnimation(HeightProperty, heightAnimation);
 	}
 
 	private void TaskListView_SelectionChanged(object sender, SelectionChangedEventArgs e) {

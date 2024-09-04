@@ -16,9 +16,9 @@ public class TasksViewModel : Core.ViewModel {
 	private ITaskDBService _dbService;
 	private string _taskTitle;
 	private string _taskDescription;
-	private DateTime? _dueDate;
+	private DateTime _dueDate = DateTime.Now;
 	private string _canvasLink;
-	private List<string> _filePaths;
+	private ObservableCollection<string> _filePaths;
 	private bool _isNotCompletedSelected = false;
 	private byte _lastFilterOperation = 2;
 
@@ -36,7 +36,7 @@ public class TasksViewModel : Core.ViewModel {
 			OnPropertyChanged();
 		}
 	}
-	public DateTime? DueDate {
+	public DateTime DueDate {
 		get => _dueDate;
 		set {
 			_dueDate = value;
@@ -50,7 +50,7 @@ public class TasksViewModel : Core.ViewModel {
 			OnPropertyChanged();
 		}
 	}
-	public List<string> FilePaths {
+	public ObservableCollection<string> FilePaths {
 		get => _filePaths;
 		set {
 			_filePaths = value;
@@ -78,7 +78,9 @@ public class TasksViewModel : Core.ViewModel {
 	public RelayCommand ChangeTaskCompletion { get; set; }
 	public RelayCommand FilterTasksCommand { get; set; }
 	public RelayCommand DeletePath { get; set; }
+	public RelayCommand DeleteTaskPath { get; set; }
 	public RelayCommand OpenURLCommand { get; set; }
+	public RelayCommand ChangeTaskDate { get; set; }
 
 	public ITaskService TaskService { get; }
 	public ITaskDBService DbService { get; }
@@ -89,7 +91,7 @@ public class TasksViewModel : Core.ViewModel {
 		DbService = dbService;
 		Tasks = new ObservableCollection<ToDoTask>();
 		FilterTasks(_lastFilterOperation);
-		FilePaths = new List<string>();
+		FilePaths = new ObservableCollection<string>();
 		FileTitlesOC = new ObservableCollection<string>();
 		FilePathStudy = new ObservableCollection<string>();
 
@@ -117,7 +119,18 @@ public class TasksViewModel : Core.ViewModel {
 
 		DeletePath = new RelayCommand(DeleteFilePath);
 
+		DeleteTaskPath = new RelayCommand(DeleteTaskFilePath);
+
 		OpenURLCommand = new RelayCommand(OpenURL, CanOpenURL);
+
+		ChangeTaskDate = new RelayCommand(ChangeTaskDueDate);
+	}
+
+	private void ChangeTaskDueDate(object obj) {
+		if (obj == null) return;
+		ToDoTask t = (ToDoTask)obj;
+
+		DbService.UpdateTask(t);
 	}
 	private bool CanOpenURL(object obj) {
 		return obj != null && !string.IsNullOrEmpty((string)obj);
@@ -194,7 +207,7 @@ public class TasksViewModel : Core.ViewModel {
 			DbService.AddTask(new ToDoTask {
 				Title = TaskTitle,
 				Description = TaskDescription,
-				DueDate = DueDate ?? DateTime.Now,
+				DueDate = DueDate,
 				CanvasLink = CanvasLink,
 				FilePaths = FilePaths
 			});
@@ -212,34 +225,39 @@ public class TasksViewModel : Core.ViewModel {
 		dlg.ShowDialog();
 		if (dlg.FileNames != null) {
 			foreach (string file in dlg.FileNames) {
-				FilePaths.Add(file);
 				string fileName = Path.GetFileName(file);
 				int insertIndex = FileTitlesOC.ToList().BinarySearch(fileName);
 				if (insertIndex < 0) {
 					insertIndex = ~insertIndex;
 				}
+				FilePaths.Insert(insertIndex, file);
 				FileTitlesOC.Insert(insertIndex, fileName);
 			}
 		}
-		FilePaths = FilePaths.OrderBy(f => f).ToList();
 	}
 	private void AddFilePathStudy(object obj) {
 		if (obj == null) return;
-		ToDoTask t = (ToDoTask)obj;
-		if (t.FilePathsStudy == null) t.FilePathsStudy = new List<string>();
+		ToDoTask t = (ToDoTask)((object[])obj)[0];
+		byte op = byte.Parse((string)((object[])obj)[1]);
 
 		OpenFileDialog dlg = new OpenFileDialog();
 		dlg.Filter = "pdf files (*.pdf) |*.pdf;";
 		dlg.Multiselect = true;
 		dlg.ShowDialog();
 
-		if (dlg.FileNames != null) {
-			foreach (string file in dlg.FileNames) {
-				t.FilePathsStudy.Add(file);
+		if (op == 0) {
+			if (dlg.FileNames != null) {
+				foreach (string file in dlg.FileNames) {
+					InsertInOrder(t.FilePaths, file);
+				}
+			}
+		} else if (op == 1) {
+			if (dlg.FileNames != null) {
+				foreach (string file in dlg.FileNames) {
+					InsertInOrder(t.FilePathsStudy, file);
+				}
 			}
 		}
-
-		FilterTasks(_lastFilterOperation);
 		DbService.UpdateTask(t);
 	}
 	private void OpenFile(object obj) {
@@ -264,8 +282,30 @@ public class TasksViewModel : Core.ViewModel {
 	}
 	private void DeleteFilePath(object obj) {
 		string path = (string)obj;
-		FilePaths.Remove(FilePaths.Find(a => a.Contains(path)));
+		FilePaths.Remove(FilePaths.ToList().Find(a => a.Contains(path)));
 		FileTitlesOC.Remove(path);
 	}
+	private void DeleteTaskFilePath(object obj) {
+		ToDoTask task = (ToDoTask)((object[])obj)[0];
+		string path = (string)((object[])obj)[1];
+		byte op = (byte)((object[])obj)[2];
+		switch (op) {
+			case 0:
+				task.FilePaths.Remove(path);
+				break;
+
+			case 1:
+				task.FilePathsStudy.Remove(path);
+				break;
+
+			default:
+				throw new ArgumentException();
+		}
+		DbService.UpdateTask(task);
+	}
 	private Process? OpenOnNavigator(string path) => Process.Start(new ProcessStartInfo() { FileName = (string)path, UseShellExecute = true });
+	private void InsertInOrder(ObservableCollection<string> collection, string filePath) {
+		int index = collection.TakeWhile(f => string.Compare(f, filePath) < 0).Count();
+		collection.Insert(index, filePath);
+	}
 }
