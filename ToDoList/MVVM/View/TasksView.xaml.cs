@@ -45,7 +45,7 @@ public partial class TasksView : UserControl {
 	}
 
 	private async void FilePaths_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-		await Task.Delay(80);
+		await Task.Delay(100);
 		Border selectedBorder = FindByName("TaskDetailPanel", previousLvi) as Border;
 		StackPanel selectedStackPanel = FindByName("TaskDetailInnerPanel", previousLvi) as StackPanel;
 		selectedStackPanel.Measure(new Size(selectedBorder.MaxWidth, selectedBorder.MaxHeight));
@@ -60,6 +60,7 @@ public partial class TasksView : UserControl {
 			object o = lvi.SelectedItem;
 			if (o == null) return;
 			ListViewItem lviItem = lvi.ItemContainerGenerator.ContainerFromItem(o) as ListViewItem;
+			if (lviItem == null) return;
 			Border selectedBorder = FindByName("TaskDetailPanel", lviItem) as Border;
 			Border selectedTaskBorder = FindByName("TaskPanelBorder", lviItem) as Border;
 			StackPanel selectedStackPanel = FindByName("TaskDetailInnerPanel", lviItem) as StackPanel;

@@ -1,35 +1,32 @@
 ﻿<Application x:Class="ToDoList.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ToDoList"
-             xmlns:viewModel="clr-namespace:ToDoList.MVVM.ViewModel"
-             xmlns:view="clr-namespace:ToDoList.MVVM.View">
-    <Application.Resources>
-	    <ResourceDictionary>
-		    <ResourceDictionary.MergedDictionaries>
-			    <ResourceDictionary Source="Theme/Control/WindowTitleIconTheme.xaml" />
-			    <ResourceDictionary Source="Theme/Control/MenuButtonTheme.xaml" />
-			    <ResourceDictionary Source="Theme/Control/TaskItemTheme.xaml" />
-			    <ResourceDictionary Source="Theme/Control/AddTaskButtonTheme.xaml" />
+				 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				 xmlns:local="clr-namespace:ToDoList"
+				 xmlns:viewModel="clr-namespace:ToDoList.MVVM.ViewModel"
+				 xmlns:view="clr-namespace:ToDoList.MVVM.View">
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Theme/Control/WindowTitleIconTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/MenuButtonTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/TaskItemTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/AddTaskButtonTheme.xaml" />
 				<ResourceDictionary Source="Theme/Control/CheckBoxTaskTheme.xaml" />
 				<ResourceDictionary Source="Theme/Control/ComboBoxFilterTheme.xaml" />
 				<ResourceDictionary Source="Theme/Control/ButtonFilterTheme.xaml" />
 				<ResourceDictionary Source="Theme/Control/ToggleButtonFilterTheme.xaml" />
 				<ResourceDictionary Source="Theme/Control/DatePickerTheme.xaml" />
 				<ResourceDictionary Source="Theme/Control/ItemsControlPDFTheme.xaml" />
-			    <ResourceDictionary Source="Theme/Core/InsetShadowTheme.xaml" />
+				<ResourceDictionary Source="Theme/Control/TextBoxTheme.xaml" />
+				<ResourceDictionary Source="Theme/Core/InsetShadow.xaml" />
 				<ResourceDictionary Source="Theme/Core/DefaultColors.xaml" />
 			</ResourceDictionary.MergedDictionaries>
-			
-		    <DataTemplate DataType="{x:Type viewModel:TasksViewModel}">
-			    <view:TasksView />
-		    </DataTemplate>
+			<DataTemplate DataType="{x:Type viewModel:TasksViewModel}">
+				<view:TasksView />
+			</DataTemplate>
 			<DataTemplate DataType="{x:Type viewModel:CalendarViewModel}">
 				<view:CalendarView />
 			</DataTemplate>
-			<DataTemplate DataType="{x:Type viewModel:ToDoTaskViewModel}">
-				<view:ToDoTaskView />
-			</DataTemplate>
 		</ResourceDictionary>
-    </Application.Resources>
+	</Application.Resources>
 </Application>

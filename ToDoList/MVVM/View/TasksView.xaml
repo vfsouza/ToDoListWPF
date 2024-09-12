@@ -6,6 +6,7 @@
 				 xmlns:local="clr-namespace:ToDoList.MVVM.View"
 				 xmlns:viewmodel="clr-namespace:ToDoList.MVVM.ViewModel"
 				 xmlns:view="clr-namespace:ToDoList.MVVM.View"
+				 xmlns:converter="clr-namespace:ToDoList.Services.Converter"
 				 d:DataContext="{d:DesignInstance Type=viewmodel:TasksViewModel}"
 				 mc:Ignorable="d"
 				 d:DesignHeight="300"
@@ -34,6 +35,7 @@
 										  Duration="0:0:0.2" />
 				</Storyboard>
 			</BeginStoryboard>
+			<converter:ByteConverter x:Key="ByteConverter" />
 		</ResourceDictionary>
 	</UserControl.Resources>
 	<Grid>
@@ -49,7 +51,6 @@
 				  Padding="0,1,0,1"
 				  Margin="0,0,0,6" />
 		<DockPanel LastChildFill="False"
-					  Margin="0,0,0,10"
 					  Grid.Row="2">
 			<StackPanel Orientation="Horizontal"
 							Grid.Row="2"
@@ -61,7 +62,7 @@
 								 FontWeight="SemiBold"
 								 Foreground="{StaticResource DefaultPrimaryForegroundBrush}"
 								 Command="{Binding FilterTasksCommand}"
-								 CommandParameter="0" />
+								 CommandParameter="{Binding Converter={StaticResource ByteConverter}, ConverterParameter=0}" />
 				<RadioButton Style="{StaticResource ButtonFilterTheme}"
 								 Background="{StaticResource DefaultSecondaryControlBrush}"
 								 Margin="0,0,10,0"
@@ -69,7 +70,7 @@
 								 FontWeight="SemiBold"
 								 Foreground="{StaticResource DefaultPrimaryForegroundBrush}"
 								 Command="{Binding FilterTasksCommand}"
-								 CommandParameter="1" />
+								 CommandParameter="{Binding Converter={StaticResource ByteConverter}, ConverterParameter=1}" />
 				<RadioButton Style="{StaticResource ButtonFilterTheme}"
 								 Background="{StaticResource DefaultSecondaryControlBrush}"
 								 Margin="0,0,10,0"
@@ -78,7 +79,7 @@
 								 FontWeight="SemiBold"
 								 Foreground="{StaticResource DefaultPrimaryForegroundBrush}"
 								 Command="{Binding FilterTasksCommand}"
-								 CommandParameter="2" />
+								 CommandParameter="{Binding Converter={StaticResource ByteConverter}, ConverterParameter=2}" />
 				<RadioButton Style="{StaticResource ButtonFilterTheme}"
 								 Background="{StaticResource DefaultSecondaryControlBrush}"
 								 Margin="0,0,10,0"
@@ -86,7 +87,7 @@
 								 FontWeight="SemiBold"
 								 Foreground="{StaticResource DefaultPrimaryForegroundBrush}"
 								 Command="{Binding FilterTasksCommand}"
-								 CommandParameter="3" />
+								 CommandParameter="{Binding Converter={StaticResource ByteConverter}, ConverterParameter=3}" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal"
 							Grid.Row="2"
@@ -97,7 +98,7 @@
 								  Foreground="{StaticResource DefaultPrimaryForegroundBrush}"
 								  Background="{StaticResource DefaultSecondaryControlBrush}"
 								  Command="{Binding FilterTasksCommand}"
-								  CommandParameter="4" />
+								  CommandParameter="{Binding Converter={StaticResource ByteConverter}, ConverterParameter=4}" />
 			</StackPanel>
 		</DockPanel>
 		<ListView Grid.Row="3"

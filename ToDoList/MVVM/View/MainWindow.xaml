@@ -95,7 +95,7 @@
 				   Fill="{StaticResource DefaultPrimaryControlBrush}"/>
 		<ContentControl Grid.Row="1"
 		                Grid.Column="1"
-		                Margin="10"
+		                Margin="10,6,10,10"
 		                Content="{Binding Navigation.CurrentView}" />
 	</Grid>
 </Window>

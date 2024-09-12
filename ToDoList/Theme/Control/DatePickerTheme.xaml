@@ -14,7 +14,7 @@
 												 VerticalAlignment="Center"
 												 HorizontalAlignment="Left"
 												 Height="50"
-												 Width="24" />
+												 Width="26" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

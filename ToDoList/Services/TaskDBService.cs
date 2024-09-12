@@ -5,71 +5,87 @@ using ToDoList.Data;
 
 namespace ToDoList.Services {
 	public interface ITaskDBService {
-		ToDoTask GetTask(int id);
-		void AddTask(ToDoTask task);
-		void UpdateTask(ToDoTask task);
-		void DeleteTask(int id);
-		ObservableCollection<ToDoTask> GetAllTasks();
-		ObservableCollection<ToDoTask> GetCompletedTasks();
-		ObservableCollection<ToDoTask> GetUncompletedTasks();
-		ObservableCollection<ToDoTask> GetTaskByDueDate(DateTime dueDate);
-		ObservableCollection<ToDoTask> GetTaskByDueDateLimit(DateTime dueDate);
+		Task<ToDoTask> GetTaskAsync(int id);
+		Task AddTaskAsync(ToDoTask task);
+		Task UpdateTaskAsync(ToDoTask task);
+		Task DeleteTaskAsync(int id);
+		Task<ObservableCollection<ToDoTask>> GetAllTasksAsync();
+		Task<ObservableCollection<ToDoTask>> GetCompletedTasksAsync();
+		Task<ObservableCollection<ToDoTask>> GetUncompletedTasksAsync();
+		Task<ObservableCollection<ToDoTask>> GetTaskByDueDateAsync(DateTime dueDate);
+		Task<ObservableCollection<ToDoTask>> GetTaskByDueDateLimitAsync(DateTime dueDate);
 	}
 
 	public class TaskDBService : ObservableObject, ITaskDBService {
 		private ToDoTaskContext dbContext;
 
-		public ToDoTaskContext DbContext { 
-			get => dbContext; 
-			private set { 
-				dbContext = value;
-				OnPropertyChanged();
-			} 
-		}
+        public ToDoTaskContext DbContext
+        {
+            get => dbContext;
+            private set
+            {
+                dbContext = value;
+                OnPropertyChanged();
+            }
+        }
 
-		public TaskDBService(ToDoTaskContext dbContext) {
-			DbContext = dbContext;
-			DbContext.ToDoTasks.Load();
-		}
+        public TaskDBService(ToDoTaskContext dbContext)
+        {
+            DbContext = dbContext;
+        }
 
-		public void AddTask(ToDoTask task) {
-			DbContext.ToDoTasks.Add(task);
-			DbContext.SaveChanges();
-		}
+        public async Task AddTaskAsync(ToDoTask task)
+        {
+            await DbContext.ToDoTasks.AddAsync(task);
+            await DbContext.SaveChangesAsync();
+        }
 
-		public ToDoTask GetTask(int id) {
-			return DbContext.ToDoTasks.Find(id) ?? throw new NullReferenceException();
-		}
+        public async Task<ToDoTask> GetTaskAsync(int id)
+        {
+            return await DbContext.ToDoTasks.FindAsync(id) ?? throw new NullReferenceException();
+        }
 
-		public void DeleteTask(int id) {
-			DbContext.ToDoTasks.Remove(GetTask(id));
-			DbContext.SaveChanges();
-		}
+        public async Task DeleteTaskAsync(int id)
+        {
+            var task = await GetTaskAsync(id);
+            DbContext.ToDoTasks.Remove(task);
+            await DbContext.SaveChangesAsync();
+        }
 
-		public void UpdateTask(ToDoTask task) {
-			DbContext.ToDoTasks.Update(task);
-			DbContext.SaveChanges();
-		}
+        public async Task UpdateTaskAsync(ToDoTask task)
+        {
+            DbContext.ToDoTasks.Update(task);
+            await DbContext.SaveChangesAsync();
+        }
 
-		public ObservableCollection<ToDoTask> GetAllTasks() {
-			return new ObservableCollection<ToDoTask>(DbContext.ToDoTasks.Local);
-		}
+        public async Task<ObservableCollection<ToDoTask>> GetAllTasksAsync()
+        {
+            var tasks = await DbContext.ToDoTasks.OrderBy(t => t.DueDate).ToListAsync();
+            return new ObservableCollection<ToDoTask>(tasks);
+        }
 
-		public ObservableCollection<ToDoTask> GetCompletedTasks() {
-			return new ObservableCollection<ToDoTask>(DbContext.ToDoTasks.Local.Where(task => task.IsCompleted));
-		}
+        public async Task<ObservableCollection<ToDoTask>> GetCompletedTasksAsync()
+        {
+            var tasks = await DbContext.ToDoTasks.Where(task => task.IsCompleted).OrderBy(t => t.DueDate).ToListAsync();
+            return new ObservableCollection<ToDoTask>(tasks);
+        }
 
+        public async Task<ObservableCollection<ToDoTask>> GetTaskByDueDateAsync(DateTime dueDate)
+        {
+            var tasks = await DbContext.ToDoTasks.Where(task => task.DueDate == dueDate).OrderBy(t => t.DueDate).ToListAsync();
+            return new ObservableCollection<ToDoTask>(tasks);
+        }
 
-		public ObservableCollection<ToDoTask> GetTaskByDueDate(DateTime dueDate) {
-			return new ObservableCollection<ToDoTask>(DbContext.ToDoTasks.Local.Where(task => task.DueDate == dueDate));
-		}
+        public async Task<ObservableCollection<ToDoTask>> GetTaskByDueDateLimitAsync(DateTime dueDate)
+        {
+            var tasks = await DbContext.ToDoTasks.Where(task => task.DueDate <= dueDate).OrderBy(t => t.DueDate).ToListAsync();
+            return new ObservableCollection<ToDoTask>(tasks);
+        }
 
-		public ObservableCollection<ToDoTask> GetTaskByDueDateLimit(DateTime dueDate) {
-			return new ObservableCollection<ToDoTask>(DbContext.ToDoTasks.Local.Where(task => task.DueDate <= dueDate));
-		}
-
-		public ObservableCollection<ToDoTask> GetUncompletedTasks() {
-			return new ObservableCollection<ToDoTask>(DbContext.ToDoTasks.Local.Where(task => !task.IsCompleted));
-		}
+        public async Task<ObservableCollection<ToDoTask>> GetUncompletedTasksAsync()
+        {
+            var tasks = await DbContext.ToDoTasks.Where(task => !task.IsCompleted).OrderBy(t => t.DueDate).ToListAsync();
+            return new ObservableCollection<ToDoTask>(tasks);
+        }
 	}
 }

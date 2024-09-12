@@ -29,7 +29,6 @@ public partial class App : Application {
 			services.AddSingleton<MainWindow>();
 
 			services.AddSingleton<MainViewModel>();
-			services.AddSingleton<ToDoTaskViewModel>();
 			services.AddSingleton<TasksViewModel>();
 			services.AddSingleton<CalendarViewModel>();
 
@@ -49,7 +48,6 @@ public partial class App : Application {
 
 	protected override void OnStartup(StartupEventArgs e) {
 		var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-		_host.Services.GetRequiredService<ToDoTaskViewModel>();
 		mainWindow.Show();
 		base.OnStartup(e);
 	}

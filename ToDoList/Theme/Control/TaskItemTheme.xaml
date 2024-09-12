@@ -21,11 +21,13 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ListViewItem}">
-					<Grid VerticalAlignment="Stretch"
-							HorizontalAlignment="Stretch"
-							Margin="0,0,0,10">
+					<Grid Margin="0,14,0,0"
+							ClipToBounds="True"
+							SnapsToDevicePixels="True"
+							UseLayoutRounding="True">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
@@ -41,22 +43,57 @@
 						<Border x:Name="TaskPanelBorder"
 								  Grid.Column="0"
 								  Grid.Row="0"
+								  Height="50"
+								  VerticalAlignment="Center"
 								  Background="{DynamicResource DefaultSecondaryControlBrush}"
-								  CornerRadius="25,0,0,25"
-								  Height="50">
-							<DockPanel VerticalAlignment="Center"
-										  LastChildFill="False">
+								  CornerRadius="25,0,0,25">
+							<DockPanel LastChildFill="False">
 								<CheckBox IsChecked="{Binding IsCompleted}"
 											 Height="24"
 											 Margin="12,0,8,0"
-											 VerticalAlignment="Center"
 											 Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.ChangeTaskCompletion}"
 											 CommandParameter="{Binding}"
 											 Style="{DynamicResource CheckBoxTaskTheme}" />
-								<Label Content="{Binding Title}"
+								<Label Content="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
 										 FontSize="20"
 										 VerticalAlignment="Center"
-										 DockPanel.Dock="Left" />
+										 DockPanel.Dock="Left"
+										 Foreground="{DynamicResource DefaultPrimaryForegroundBrush}">
+									<Label.Style>
+										<Style TargetType="Label">
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding IsEditing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+																 Value="False">
+													<Setter Property="Visibility"
+															  Value="Visible" />
+												</DataTrigger>
+												<DataTrigger Binding="{Binding IsEditing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+																 Value="True">
+													<Setter Property="Visibility"
+															  Value="Collapsed" />
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</Label.Style>
+									<i:Interaction.Triggers>
+										<i:EventTrigger EventName="MouseDoubleClick">
+											<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.ToggleEditModeCommand}"
+																		  CommandParameter="{Binding}" />
+										</i:EventTrigger>
+									</i:Interaction.Triggers>
+								</Label>
+								<TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+											Style="{DynamicResource TextBoxTheme}"
+											FontSize="20"
+											VerticalAlignment="Center"
+											DockPanel.Dock="Left">
+									<i:Interaction.Triggers>
+										<i:EventTrigger EventName="LostFocus">
+											<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.EditTaskCommand}"
+																		  CommandParameter="{Binding}" />
+										</i:EventTrigger>
+									</i:Interaction.Triggers>
+								</TextBox>
 								<Label Content="{Binding DueDate, Converter={StaticResource TaskDateConverter}}"
 										 VerticalAlignment="Center"
 										 DockPanel.Dock="Right" />
@@ -64,7 +101,7 @@
 						</Border>
 						<ContentControl Grid.Column="1"
 											 Grid.Row="0"
-											 Style="{DynamicResource InsetShadow}">
+											 Style="{StaticResource InsetShadow}">
 							<ContentControl.Triggers>
 								<EventTrigger RoutedEvent="Mouse.MouseEnter">
 									<BeginStoryboard>
@@ -72,7 +109,7 @@
 											<DoubleAnimation Storyboard.TargetName="TaskToolsPanel"
 																  Storyboard.TargetProperty="Width"
 																  From="0"
-																  To="130"
+																  To="94"
 																  Duration="0:0:0.2" />
 										</Storyboard>
 									</BeginStoryboard>
@@ -82,7 +119,7 @@
 										<Storyboard>
 											<DoubleAnimation Storyboard.TargetName="TaskToolsPanel"
 																  Storyboard.TargetProperty="Width"
-																  From="130"
+																  From="94"
 																  To="0"
 																  Duration="0:0:0.2" />
 										</Storyboard>
@@ -90,60 +127,45 @@
 								</EventTrigger>
 							</ContentControl.Triggers>
 							<StackPanel Orientation="Horizontal"
-											Background="Transparent">
-								<StackPanel Orientation="Horizontal"
-												Background="Transparent"
-												Width="0"
+											ClipToBounds="True">
+								<StackPanel Width="0"
 												x:Name="TaskToolsPanel">
 									<DockPanel LastChildFill="False"
 												  Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}">
 										<localClrs:ImageButton Image="/Images/Icons/delete.png"
 																	  HoverImage="/Images/Icons/confirmdelete.png"
 																	  Height="50"
-																	  Width="24"
+																	  Width="26"
 																	  DockPanel.Dock="Right"
-																	  Margin="0,0,14,0">
+																	  Margin="0,0,12,0">
 											<localClrs:ImageButton.InputBindings>
 												<MouseBinding MouseAction="{x:Static MouseAction.LeftClick}"
 																  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.DeleteTaskCommand}"
 																  CommandParameter="{Binding}" />
 											</localClrs:ImageButton.InputBindings>
 										</localClrs:ImageButton>
-										<localClrs:ImageButton Image="/Images/Icons/edit.png"
-																	  HoverImage="/Images/Icons/editwhite.png"
-																	  Height="50"
-																	  Width="22"
-																	  DockPanel.Dock="Right"
-																	  Margin="0,0,14,0">
-											<localClrs:ImageButton.InputBindings>
-												<MouseBinding MouseAction="{x:Static MouseAction.LeftClick}"
-																  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.NavigateToEditToDoTaskView}"
-																  CommandParameter="{Binding}" />
-											</localClrs:ImageButton.InputBindings>
-										</localClrs:ImageButton>
-										<DatePicker Margin="0,0,14,0"
+										<DatePicker Margin="0,0,10,0"
 														DockPanel.Dock="Right"
 														SelectedDate="{Binding DueDate}">
 											<i:Interaction.Triggers>
 												<i:EventTrigger EventName="SelectedDateChanged">
 													<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.ChangeTaskDate}"
-																				  CommandParameter="{Binding}"/>
+																				  CommandParameter="{Binding}" />
 												</i:EventTrigger>
 											</i:Interaction.Triggers>
 										</DatePicker>
 									</DockPanel>
 								</StackPanel>
-								<Rectangle Fill="{DynamicResource DefaultEditControlBrush}"
-											  Width="12" />
+								<Rectangle Width="12"
+											  Fill="{DynamicResource DefaultEditControlBrush}" />
 							</StackPanel>
 						</ContentControl>
-						<Border Grid.ColumnSpan="2"
+						<Border Grid.ColumnSpan="3"
 								  Grid.Row="1"
 								  Background="{DynamicResource DefaultSecondaryControlBrush}"
 								  x:Name="TaskDetailPanel"
 								  Height="0"
 								  BorderBrush="{DynamicResource DefaultEditControlBrush}"
-								  BorderThickness="0,0,0,0"
 								  ClipToBounds="True">
 							<Grid>
 								<Border Background="Transparent"
@@ -155,10 +177,11 @@
 																BlurRadius="15" />
 									</Border.Effect>
 								</Border>
-								<StackPanel x:Name="TaskDetailInnerPanel">
+								<StackPanel x:Name="TaskDetailInnerPanel"
+												Margin="10">
 									<TextBlock Text="{Binding Description}"
 												  FontSize="16"
-												  Margin="10,10,0,0">
+												  Margin="0,10,0,0">
 										<TextBlock.Resources>
 											<Style TargetType="TextBlock">
 												<Style.Triggers>
@@ -173,7 +196,6 @@
 									<Button Content="CANVAS"
 											  FontSize="16"
 											  FontWeight="SemiBold"
-											  Margin="10,10,0,10"
 											  Foreground="{DynamicResource DefaultPrimaryForegroundBrush}"
 											  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.OpenURLCommand}"
 											  CommandParameter="{Binding CanvasLink}">
@@ -184,19 +206,38 @@
 										</Button.Template>
 										<Button.Resources>
 											<Style TargetType="Button">
+												<Setter Property="Margin"
+														  Value="0,10,0,0" />
 												<Style.Triggers>
 													<Trigger Property="IsEnabled"
 																Value="False">
 														<Setter Property="Visibility"
 																  Value="Collapsed" />
 													</Trigger>
+													<DataTrigger Binding="{Binding Description}"
+																	 Value="{x:Null}">
+														<Setter Property="Margin"
+																  Value="0" />
+													</DataTrigger>
 												</Style.Triggers>
 											</Style>
 										</Button.Resources>
 									</Button>
 									<StackPanel Orientation="Horizontal"
-													VerticalAlignment="Center"
-													Margin="10,0,0,10">
+													VerticalAlignment="Center">
+										<StackPanel.Style>
+											<Style TargetType="StackPanel">
+												<Setter Property="Margin"
+														  Value="0,10,0,0" />
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding CanvasLink}"
+																	 Value="{x:Null}">
+														<Setter Property="Margin"
+																  Value="0" />
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</StackPanel.Style>
 										<Label Content="Slide/Materials"
 												 Foreground="{DynamicResource DefaultPrimaryForegroundBrush}"
 												 FontSize="16"
@@ -205,7 +246,7 @@
 												  Height="24"
 												  Width="24"
 												  HorizontalAlignment="Left"
-												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePathStudy}">
+												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePath}">
 											<Button.CommandParameter>
 												<MultiBinding Converter="{StaticResource MultiValueConverter}">
 													<Binding Path="." />
@@ -217,7 +258,8 @@
 										</Button>
 									</StackPanel>
 									<ItemsControl x:Name="FilePaths"
-													  ItemsSource="{Binding FilePaths}">
+													  ItemsSource="{Binding FilePaths}"
+													  Margin="0,10,0,0">
 										<ItemsControl.ItemsPanel>
 											<ItemsPanelTemplate>
 												<WrapPanel Orientation="Horizontal"
@@ -230,7 +272,7 @@
 									</ItemsControl>
 									<StackPanel Orientation="Horizontal"
 													VerticalAlignment="Center"
-													Margin="10,0,0,10">
+													Margin="0,10,0,0">
 										<Label Content="Study"
 												 Foreground="{DynamicResource DefaultPrimaryForegroundBrush}"
 												 FontSize="16"
@@ -240,7 +282,7 @@
 												  Height="24"
 												  Width="24"
 												  HorizontalAlignment="Left"
-												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePathStudy}">
+												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePath}">
 											<Button.CommandParameter>
 												<MultiBinding Converter="{StaticResource MultiValueConverter}">
 													<Binding Path="." />
@@ -252,7 +294,8 @@
 										</Button>
 									</StackPanel>
 									<ItemsControl x:Name="FilePathsStudy"
-													  ItemsSource="{Binding FilePathsStudy}">
+													  ItemsSource="{Binding FilePathsStudy}"
+													  Margin="0,10,0,0">
 										<ItemsControl.ItemsPanel>
 											<ItemsPanelTemplate>
 												<WrapPanel Orientation="Horizontal"
