@@ -16,7 +16,6 @@ In essence, this ToDoList represents not just a productivity tool, but also a mi
 
 - **WPF (Windows Presentation Foundation)**: For building the user interface.
 - **.NET Core**: The application is built on the .NET Core framework.
-- **C#**: The primary programming language used.
 - **Entity Framework Core**: For database operations and ORM.
 - **SQLite**: As the database engine.
 - **Microsoft.Extensions.DependencyInjection**: For dependency injection.
@@ -36,7 +35,7 @@ In essence, this ToDoList represents not just a productivity tool, but also a mi
 
 1. **MainWindow**: The main application window.
 2. **TasksView**: Displays the list of tasks and provides task management functionality.
-3. **CalendarView**: A view for calendar-related functionality (appears to be a work in progress).
+3. **CalendarView**: A view for calendar-related functionality (work in progress).
 4. **CreateTaskView**: A view for creating new tasks.
 
 ### ViewModels
