@@ -2,11 +2,10 @@
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
-using System.Windows.Data;
 using ToDoList.Core;
 using ToDoList.Data;
+using ToDoList.MVVM.View;
 using ToDoList.Services;
 
 namespace ToDoList.MVVM.ViewModel;
@@ -50,30 +49,16 @@ public class TasksViewModel : Core.ViewModel {
 			OnPropertyChanged();
 		}
 	}
-	public ObservableCollection<string> FilePaths {
-		get => _filePaths;
-		set {
-			_filePaths = value;
-			OnPropertyChanged();
-		}
-	}
-	public ObservableCollection<string> FilePathStudy { get; set; }
-	public ObservableCollection<string> FileTitlesOC { get; set; }
-	public INavigationService Navigation {
-		get => _navigation;
-		set {
-			_navigation = value;
-			OnPropertyChanged();
-		}
-	}
-
 	public ObservableCollection<ToDoTask> Tasks { get; }
+	public ObservableCollection<string> FilePaths { get; set; }
+
 	public RelayCommand CreateTaskCommand { get; set; }
 	public RelayCommand NavigateToToDoTaskView { get; set; }
 	public RelayCommand NavigateToEditToDoTaskView { get; set; }
 	public RelayCommand<ToDoTask> DeleteTaskCommand { get; set; }
 	public RelayCommand<string> OpenFileCommand { get; set; }
-	public RelayCommand<object[]> AddNewFilePath { get; set; }
+	public RelayCommand<object[]> AddNewFilePathToTask { get; set; }
+	public RelayCommand AddFilePathToNewTask { get; set; }
 	public AsyncRelayCommand<ToDoTask> ChangeTaskCompletion { get; set; }
 	public AsyncRelayCommand<byte> FilterTasksCommand { get; set; }
 	public RelayCommand<string> DeletePath { get; set; }
@@ -85,20 +70,23 @@ public class TasksViewModel : Core.ViewModel {
 
 	public ITaskService TaskService { get; }
 	public ITaskDBService DbService { get; }
+	public INavigationService Navigation { get; }
+	public ISettingsManager SettingsManager { get; }
 
-	public TasksViewModel(ITaskDBService dbService, INavigationService navigation, ITaskService taskService) {
+	public TasksViewModel(ITaskDBService dbService, INavigationService navigation, ITaskService taskService, ISettingsManager settingsManager) {
 		Navigation = navigation;
 		TaskService = taskService;
 		DbService = dbService;
+		SettingsManager = settingsManager;
 		Tasks = new ObservableCollection<ToDoTask>();
-		FilterTasksAsync(_lastFilterOperation);
 		FilePaths = new ObservableCollection<string>();
-		FileTitlesOC = new ObservableCollection<string>();
-		FilePathStudy = new ObservableCollection<string>();
+		FilterTasksAsync(_lastFilterOperation);
 
 		CreateTaskCommand = new RelayCommand(CreateTask);
 
-		AddNewFilePath = new RelayCommand<object[]>(AddFilePath);
+		AddNewFilePathToTask = new RelayCommand<object[]>(AddFilePath);
+
+		AddFilePathToNewTask = new RelayCommand(AddFilePathNewTask);
 
 		OpenFileCommand = new RelayCommand<string>(OpenFile);
 
@@ -201,12 +189,12 @@ public class TasksViewModel : Core.ViewModel {
 				break;
 		}
 	}
-	private void CreateTask() {
+	private async void CreateTask() {
 		if (string.IsNullOrEmpty(TaskTitle)) {
 			MessageBox.Show("Please fill out all fields.");
 			return;
 		} else {
-			DbService.AddTaskAsync(new ToDoTask {
+			await DbService.AddTaskAsync(new ToDoTask {
 				Title = TaskTitle,
 				Description = TaskDescription,
 				DueDate = DueDate,
@@ -219,8 +207,19 @@ public class TasksViewModel : Core.ViewModel {
 		DueDate = DateTime.Now;
 		CanvasLink = "";
 		FilePaths.Clear();
-		FileTitlesOC.Clear();
 		FilterTasksAsync(_lastFilterOperation);
+	}
+	private void AddFilePathNewTask() {
+		OpenFileDialog dlg = new OpenFileDialog();
+		dlg.Filter = "pdf files (*.pdf) |*.pdf;|All files (*.*)|*.*";
+		dlg.Multiselect = true;
+		dlg.ShowDialog();
+
+		if (dlg.FileNames != null) {
+			foreach (string file in dlg.FileNames) {
+				InsertInOrder(FilePaths, file);
+			}
+		}
 	}
 	private void AddFilePath(object[] obj) {
 		if (obj == null) return;
@@ -249,7 +248,7 @@ public class TasksViewModel : Core.ViewModel {
 	}
 	private void OpenFile(string path) => OpenOnNavigator(path);
 	private void DeleteTask(ToDoTask task) {
-		if (MessageBox.Show(CanvasLink, "Are you sure you want to delete this task?", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+		if (CustomMessageBox.Show("Are you sure you want to delete this task?")) {
 			DbService.DeleteTaskAsync(task.Id);
 			FilterTasksAsync(_lastFilterOperation);
 		}
@@ -260,7 +259,6 @@ public class TasksViewModel : Core.ViewModel {
 	}
 	private void DeleteFilePath(string path) {
 		FilePaths.Remove(FilePaths.ToList().Find(a => a.Contains(path)));
-		FileTitlesOC.Remove(path);
 	}
 	private void DeleteTaskFilePath(object[] obj) {
 		ToDoTask task = (ToDoTask)obj[0];

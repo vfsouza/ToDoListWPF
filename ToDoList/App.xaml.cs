@@ -31,10 +31,12 @@ public partial class App : Application {
 			services.AddSingleton<MainViewModel>();
 			services.AddSingleton<TasksViewModel>();
 			services.AddSingleton<CalendarViewModel>();
+			services.AddSingleton<SettingsViewModel>();
 
 			services.AddSingleton<ITaskDBService, TaskDBService>();
 			services.AddSingleton<INavigationService, NavigationService>();
 			services.AddSingleton<ITaskService, TaskService>();
+			services.AddSingleton<ISettingsManager, SettingsManager>();
 
 			services.AddSingleton<Func<Type, ViewModel>>(provider => viewModelType => (ViewModel) provider.GetRequiredService(viewModelType));
 

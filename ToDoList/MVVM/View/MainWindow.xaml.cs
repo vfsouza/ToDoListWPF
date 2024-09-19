@@ -21,19 +21,6 @@ public partial class MainWindow : Window {
 		WindowState = WindowState.Minimized;
 	}
 
-	private void MaximizeButtonClick(object sender, RoutedEventArgs e) {
-		
-		if (WindowState == WindowState.Normal) {
-			WindowState = WindowState.Maximized;
-			WindowPanel.Margin = new Thickness(14, 6, 16, 0);
-			WindowPanelGridRow.Height = new GridLength(60);
-		} else {
-			WindowState = WindowState.Normal;
-			WindowPanel.Margin = new Thickness(0, 0, 8, 0);
-			WindowPanelGridRow.Height = new GridLength(50);
-		}
-	}
-
 	private void CloseButtonClick(object sender, RoutedEventArgs e) {
 		Application.Current.Shutdown();
 	}

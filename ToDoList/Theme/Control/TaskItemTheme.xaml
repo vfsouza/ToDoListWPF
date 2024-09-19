@@ -246,7 +246,7 @@
 												  Height="24"
 												  Width="24"
 												  HorizontalAlignment="Left"
-												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePath}">
+												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePathToTask}">
 											<Button.CommandParameter>
 												<MultiBinding Converter="{StaticResource MultiValueConverter}">
 													<Binding Path="." />
@@ -282,7 +282,7 @@
 												  Height="24"
 												  Width="24"
 												  HorizontalAlignment="Left"
-												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePath}">
+												  Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddNewFilePathToTask}">
 											<Button.CommandParameter>
 												<MultiBinding Converter="{StaticResource MultiValueConverter}">
 													<Binding Path="." />

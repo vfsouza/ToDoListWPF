@@ -10,6 +10,10 @@
 				 mc:Ignorable="d"
 				 d:DesignHeight="450"
 				 d:DesignWidth="800">
+	<UserControl.Resources>
+		<converter:FileNameConverter x:Key="FileNameConverter" />
+		<converter:DateConverter x:Key="DateConverter" />
+	</UserControl.Resources>
 	<StackPanel Grid.Row="0"
 					MouseLeave="StackPanel_MouseLeave"
 					Background="Transparent">
@@ -40,10 +44,7 @@
 				<StackPanel Orientation="Horizontal"
 								VerticalAlignment="Center"
 								HorizontalAlignment="Left">
-					<StackPanel.Resources>
-						<converter:DateConverter x:Key="DateConverter" />
-					</StackPanel.Resources>
-					<Button Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.AddNewFilePath, Mode=TwoWay}">
+					<Button Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.AddFilePathToNewTask, Mode=TwoWay}">
 						<Button.Resources>
 							<Style TargetType="Button">
 								<Setter Property="Template">
@@ -87,13 +88,13 @@
 							 FontWeight="Medium"
 							 FontSize="16" />
 				</StackPanel>
-				<ItemsControl ItemsSource="{Binding FileTitlesOC}">
+				<ItemsControl ItemsSource="{Binding FilePaths, Converter={StaticResource FileNameConverter}, UpdateSourceTrigger=PropertyChanged}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
 							<WrapPanel Orientation="Vertical"
 										  MaxHeight="100"
 										  MaxWidth="660"
-										  ItemWidth="80"/>
+										  ItemWidth="150"/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
